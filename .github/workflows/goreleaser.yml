@@ -132,6 +132,8 @@ jobs:
         uses: actions/attest-sbom@v1
         with:
           subject-path: ghcr.io/${{ github.repository }}
+          subject-digest: |
+            ${{ steps.inspector-container.outputs.artifact_digest }}
           sbom-path: ${{steps.inspector-container.outputs.artifact_sbom}}
           push-to-registry: true
 
