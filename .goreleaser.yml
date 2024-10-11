@@ -1,0 +1,149 @@
+env:
+  - GO111MODULE=on
+  - CGO_ENABLED=0
+
+before:
+  hooks:
+    - ./scripts/manpages.sh
+    - ./scripts/completions.sh
+
+builds:
+  -
+    binary: zapwerx-cli
+    ldflags: -s -w -X main.version={{ .Version }}
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  -
+    builds:
+      - zapwerx-cli
+    format_overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      amd64: x86_64
+
+nfpms:
+  - builds:
+      - zapwerx-cli
+    vendor: gillisandrew
+    homepage:  https://github.com/gillisandrew/zapwerx-cli
+    maintainer: "Tom Morelly <tommorelly@gmail.com>"
+    description: "A general purpose golang CLI template for Github and Gitlab"
+    license: GPL-3.0
+    formats:
+      - apk
+      - deb
+      - rpm
+    bindir: /usr/bin
+    contents:
+      - src: ./manpages/zapwerx-cli.1.gz
+        dst: /usr/share/man/man1/zapwerx-cli.1.gz
+        file_info:
+          mode: 0644
+      - src: ./completions/zapwerx-cli.bash
+        dst: /usr/share/bash-completion/completions/zapwerx-cli
+        file_info:
+          mode: 0644
+      - src: ./completions/zapwerx-cli.fish
+        dst: /usr/share/fish/vendor_completions.d/zapwerx-cli.fish
+        file_info:
+          mode: 0644
+      - src: ./completions/zapwerx-cli.zsh
+        dst:  /usr/share/zsh/vendor-completions/_zapwerx-cli
+        file_info:
+          mode: 0644
+
+dockers:
+- image_templates:
+  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+  dockerfile: Dockerfile
+  use: buildx
+  build_flag_templates:
+  - "--pull"
+  - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
+  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
+  - "--label=io.artifacthub.package.license=MIT"
+  - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.name={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source={{.GitURL}}"
+  - "--platform=linux/amd64"
+- image_templates:
+  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+  dockerfile:  Dockerfile
+  use: buildx
+  build_flag_templates:
+  - "--pull"
+  - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
+  - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/www/static/images/logo.png"
+  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
+  - "--label=io.artifacthub.package.license=MIT"
+  - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.name={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source={{.GitURL}}"
+  - "--platform=linux/arm64"
+  goarch: arm64
+
+docker_manifests:
+- name_template: 'gillisandrew/{{.ProjectName}}:{{ .Tag }}'
+  image_templates:
+  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+- name_template: 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}'
+  image_templates:
+  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+- name_template: 'gillisandrew/{{.ProjectName}}:latest'
+  image_templates:
+  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+- name_template: 'ghcr.io/gillisandrew/{{.ProjectName}}:latest'
+  image_templates:
+  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+    - '^test:'
+    - '^chore'
+    - 'merge conflict'
+    - Merge pull request
+    - Merge remote-tracking branch
+    - Merge branch
+    - go mod tidy
+  groups:
+    - title: Dependency updates
+      regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
+      order: 300
+    - title: 'New Features'
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 100
+    - title: 'Bug fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 200
+    - title: 'Documentation updates'
+      regexp: ^.*?doc(\([[:word:]]+\))??!?:.+$
+      order: 400
+    - title: Other work
+      order: 9999
