@@ -1,3 +1,7 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
+version: 2
+
 env:
   - GO111MODULE=on
   - CGO_ENABLED=0
@@ -12,6 +16,7 @@ builds:
     binary: zapwerx-cli
     ldflags: -s -w -X main.version={{ .Version }}
     goos:
+      - windows
       - linux
       - darwin
     goarch:
@@ -25,18 +30,20 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      amd64: x86_64
+    name_template: >-
+      {{- .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
 
 nfpms:
   - builds:
       - zapwerx-cli
     vendor: gillisandrew
     homepage:  https://github.com/gillisandrew/zapwerx-cli
-    maintainer: "Tom Morelly <tommorelly@gmail.com>"
-    description: "A general purpose golang CLI template for Github and Gitlab"
+    maintainer: "Andrew Gillis <gillis.andrew@gmail.com>"
+    description: "A demo project to show how to use attestations in a CI/CD pipeline"
     license: GPL-3.0
     formats:
       - apk
@@ -67,48 +74,45 @@ dockers:
   dockerfile: Dockerfile
   use: buildx
   build_flag_templates:
-  - "--pull"
-  - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
-  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
-  - "--label=io.artifacthub.package.license=MIT"
-  - "--label=org.opencontainers.image.description=A project to demonstrate the use of attestations in a CI/CD pipeline"
-  - "--label=org.opencontainers.image.created={{.Date}}"
-  - "--label=org.opencontainers.image.name={{.ProjectName}}"
-  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-  - "--label=org.opencontainers.image.version={{.Version}}"
-  - "--label=org.opencontainers.image.source={{.GitURL}}"
-  - "--platform=linux/amd64"
+    - "--pull"
+    - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
+    - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
+    - "--label=io.artifacthub.package.license=MIT"
+    - "--label=org.opencontainers.image.description=A demo project to show how to use attestations in a CI/CD pipeline"
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.name={{.ProjectName}}"
+    - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
+    - "--label=org.opencontainers.image.source={{.GitURL}}"
+    - "--platform=linux/amd64"
 - image_templates:
-  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+    - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
   dockerfile:  Dockerfile
   use: buildx
   build_flag_templates:
-  - "--pull"
-  - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
-  - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/www/static/images/logo.png"
-  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
-  - "--label=io.artifacthub.package.license=MIT"
-  - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
-  - "--label=org.opencontainers.image.created={{.Date}}"
-  - "--label=org.opencontainers.image.name={{.ProjectName}}"
-  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-  - "--label=org.opencontainers.image.version={{.Version}}"
-  - "--label=org.opencontainers.image.source={{.GitURL}}"
-  - "--platform=linux/arm64"
+    - "--pull"
+    - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
+    - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/www/static/images/logo.png"
+    - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
+    - "--label=io.artifacthub.package.license=MIT"
+    - "--label=org.opencontainers.image.description=A demo project to show how to use attestations in a CI/CD pipeline"
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.name={{.ProjectName}}"
+    - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
+    - "--label=org.opencontainers.image.source={{.GitURL}}"
+    - "--platform=linux/arm64"
   goarch: arm64
 
 docker_manifests:
 - name_template: 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}'
   image_templates:
-  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
-  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
+    - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+    - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
 - name_template: 'ghcr.io/gillisandrew/{{.ProjectName}}:latest'
   image_templates:
-  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
-  - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
-
-checksum:
-  name_template: "checksums.txt"
+    - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
+    - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
 
 changelog:
   sort: asc
@@ -137,3 +141,4 @@ changelog:
       order: 400
     - title: Other work
       order: 9999
+
