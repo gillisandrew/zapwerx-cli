@@ -4,10 +4,13 @@ on:
   push:
     tags:
       - '*'
+  workflow_dispatch: {}
 
 permissions:
   contents: write
   packages: write
+  id-token: write
+  attestations: write
 
 jobs:
   goreleaser:
@@ -43,6 +46,22 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           version: '~> v2'
-          args: release
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - 
+        name: Attest package provenance
+        uses: actions/attest-build-provenance@v1
+        with: 
+          subject-path: |
+            dist/*.apk
+            dist/*.deb
+            dist/*.rpm
+            dist/*.tar.gz
+            dist/*.zip
+      -
+        name: Attest container provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: ghcr.io/${{ github.repository }}
+          push-to-registry: true

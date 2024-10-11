@@ -14,6 +14,7 @@ builds:
     binary: zapwerx-cli
     ldflags: -s -w -X main.version={{ .Version }}
     goos:
+      - windows
       - linux
       - darwin
     goarch:
@@ -33,15 +34,14 @@ archives:
       {{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end -}}
 
 nfpms:
   - builds:
       - zapwerx-cli
     vendor: gillisandrew
     homepage:  https://github.com/gillisandrew/zapwerx-cli
-    maintainer: "Tom Morelly <tommorelly@gmail.com>"
-    description: "A general purpose golang CLI template for Github"
+    maintainer: "Andrew Gillis <gillis.andrew@gmail.com>"
+    description: "A demo project to show how to use attestations in a CI/CD pipeline"
     license: GPL-3.0
     formats:
       - apk
@@ -76,7 +76,7 @@ dockers:
   - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
   - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
   - "--label=io.artifacthub.package.license=MIT"
-  - "--label=org.opencontainers.image.description=A project to demonstrate the use of attestations in a CI/CD pipeline"
+  - "--label=org.opencontainers.image.description=A demo project to show how to use attestations in a CI/CD pipeline"
   - "--label=org.opencontainers.image.created={{.Date}}"
   - "--label=org.opencontainers.image.name={{.ProjectName}}"
   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
@@ -93,7 +93,7 @@ dockers:
   - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/www/static/images/logo.png"
   - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
   - "--label=io.artifacthub.package.license=MIT"
-  - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github"
+  - "--label=org.opencontainers.image.description=A demo project to show how to use attestations in a CI/CD pipeline"
   - "--label=org.opencontainers.image.created={{.Date}}"
   - "--label=org.opencontainers.image.name={{.ProjectName}}"
   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
@@ -111,9 +111,6 @@ docker_manifests:
   image_templates:
   - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
   - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
-
-checksum:
-  name_template: "checksums.txt"
 
 changelog:
   sort: asc
