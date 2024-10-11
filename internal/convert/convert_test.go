@@ -20,8 +20,14 @@ func TestToInteger(t *testing.T) {
 			err:      false,
 		},
 		{
+			name:     "valid string",
+			input:    "1",
+			expected: 1,
+			err:      false,
+		},
+		{
 			name:  "invalid string",
-			input: "1",
+			input: "1asdaw",
 			err:   true,
 		},
 		{
@@ -35,7 +41,9 @@ func TestToInteger(t *testing.T) {
 		res, err := ToInteger(tc.input)
 
 		if tc.err {
-			assert.Error(t, errConversionError(tc.input), err)
+			if assert.Error(t, err) {
+				assert.Equal(t, errConversionError(tc.input), err)
+			}
 		} else {
 			assert.Equal(t, tc.expected, res)
 		}

@@ -7,21 +7,19 @@ linters:
     - testpackage
     - forbidigo
     - paralleltest
-    - exhaustivestruct
     - varnamelen
-    - interfacer
-    - maligned
-    - scopelint
-    - golint
-    - varcheck
-    - nosnakecase
-    - deadcode
-    - ifshort
-    - structcheck
     - rowserrcheck
     - sqlclosecheck
-    - structcheck
     - wastedassign
     - exhaustruct
     - nolintlint
     - wrapcheck
+    - depguard
+    - gomnd
+    - execinquery
+    - exportloopref
+
+    # - staticcheck
+    # - gosimple
+    # - stylecheck
+    # - unused

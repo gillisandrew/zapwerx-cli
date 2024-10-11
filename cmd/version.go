@@ -12,7 +12,7 @@ func newVersionCmd(version string) *cobra.Command {
 		Short:        "zapwerx-cli version",
 		Args:         cobra.NoArgs,
 		SilenceUsage: true,
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			fmt.Fprintf(cmd.OutOrStdout(), "zapwerx-cli: %s\n", version)
 		},
 	}

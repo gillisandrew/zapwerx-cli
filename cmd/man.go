@@ -15,7 +15,7 @@ type ManCmd struct {
 }
 
 // NewManCmd manpage cmd.
-//nolint
+// nolint
 func NewManCmd() *ManCmd {
 	root := &ManCmd{}
 
@@ -26,7 +26,7 @@ func NewManCmd() *ManCmd {
 		DisableFlagsInUseLine: true,
 		Hidden:                true,
 		Args:                  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			manPage, err := mcoral.NewManPage(1, root.Cmd.Root())
 			if err != nil {
 				return err
