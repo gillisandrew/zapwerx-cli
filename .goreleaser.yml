@@ -63,16 +63,15 @@ nfpms:
 
 dockers:
 - image_templates:
-  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
   - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
   dockerfile: Dockerfile
   use: buildx
   build_flag_templates:
   - "--pull"
   - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
-  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
+  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
   - "--label=io.artifacthub.package.license=MIT"
-  - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
+  - "--label=org.opencontainers.image.description=A project to demonstrate the use of attestations in a CI/CD pipeline"
   - "--label=org.opencontainers.image.created={{.Date}}"
   - "--label=org.opencontainers.image.name={{.ProjectName}}"
   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
@@ -80,7 +79,6 @@ dockers:
   - "--label=org.opencontainers.image.source={{.GitURL}}"
   - "--platform=linux/amd64"
 - image_templates:
-  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
   - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
   dockerfile:  Dockerfile
   use: buildx
@@ -88,7 +86,7 @@ dockers:
   - "--pull"
   - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/README.md"
   - "--label=io.artifacthub.package.logo-url=https://raw.githubusercontent.com/gillisandrew/zapwerx-cli/master/www/static/images/logo.png"
-  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Tom Morelly\",\"email\":\"tommorelly@gmail.com\"}]"
+  - "--label=io.artifacthub.package.maintainers=[{\"name\":\"Andrew Gillis\",\"email\":\"gillis.andrew@gmail.com\"}]"
   - "--label=io.artifacthub.package.license=MIT"
   - "--label=org.opencontainers.image.description=A general purpose golang CLI template for Github and Gitlab"
   - "--label=org.opencontainers.image.created={{.Date}}"
@@ -100,18 +98,10 @@ dockers:
   goarch: arm64
 
 docker_manifests:
-- name_template: 'gillisandrew/{{.ProjectName}}:{{ .Tag }}'
-  image_templates:
-  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
-  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
 - name_template: 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}'
   image_templates:
   - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
   - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
-- name_template: 'gillisandrew/{{.ProjectName}}:latest'
-  image_templates:
-  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
-  - 'gillisandrew/{{.ProjectName}}:{{ .Tag }}-arm64'
 - name_template: 'ghcr.io/gillisandrew/{{.ProjectName}}:latest'
   image_templates:
   - 'ghcr.io/gillisandrew/{{.ProjectName}}:{{ .Tag }}-amd64'
