@@ -18,8 +18,3 @@ linters:
     - gomnd
     - execinquery
     - exportloopref
-
-    # - staticcheck
-    # - gosimple
-    # - stylecheck
-    # - unused
